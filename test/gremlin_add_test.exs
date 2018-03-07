@@ -31,7 +31,7 @@ defmodule ExdgraphGremlin.GremlinAddTest do
   # Extend the timeout
   @moduletag timeout: 120_000
 
-  #doctest ExdgraphGremlin
+  doctest ExdgraphGremlin
   @testing_schema "id: string @index(exact).
     name: string @index(exact, term) @count .
     knows: uid .
@@ -41,7 +41,7 @@ defmodule ExdgraphGremlin.GremlinAddTest do
     dob: dateTime ."
 
   setup do
-    # Logger.info fn -> "💡 GRPC-Server: #{Application.get_env(:exdgraph, :dgraphServerGRPC)}" end
+    # Logger.info fn -> "💡 GRPC-Server: #{Application.get_env(:ex_dgraph, :dgraphServerGRPC)}" end
     {:ok, channel} = GRPC.Stub.connect(Application.get_env(:ex_dgraph, :dgraphServerGRPC))
     operation = ExDgraph.Api.Operation.new(drop_all: true)
     {:ok, _} = channel |> ExDgraph.Api.Dgraph.Stub.alter(operation)
@@ -115,11 +115,36 @@ defmodule ExdgraphGremlin.GremlinAddTest do
     assert "knows" == edge.predicate
 
     {:ok, [person_one]} =
-      ExdgraphGremlin.LowLevel.query_vertex(graph, "anyofterms", "name", "John", "uid name knows { name }")
+      ExdgraphGremlin.LowLevel.query_vertex(
+        graph,
+        "anyofterms",
+        "name",
+        "John",
+        "uid name knows { name }"
+      )
 
     # Logger.info(fn -> "💡 person_one: #{inspect person_one}" end)
     assert "John" == person_one.name
     assert "Peter" == List.first(person_one.knows)["name"]
+
+    {:ok, out_vertex} =
+      edge
+      |> outV
+
+    assert "John" == out_vertex.vertex_struct.name
+
+    {:ok, in_vertex} =
+      edge
+      |> inV
+
+    assert "Peter" == in_vertex.vertex_struct.name
+
+    {:ok, {b_out_vertex, b_in_vertex}} =
+      edge
+      |> bothV
+
+    assert "John" == b_out_vertex.vertex_struct.name
+    assert "Peter" == b_in_vertex.vertex_struct.name
   end
 
   test "Gremlin Vertex Step", %{channel: channel} do

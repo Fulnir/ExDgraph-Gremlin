@@ -9,6 +9,8 @@ defmodule ExdgraphGremlin.Edge do
   @doc """
   The edge properties.
   Reserved for cache and other
+  from => out => tail, to => in => head
+  In edges of a vertex are connected to in vertex of a edge.
   """
   defstruct graph: Graph,
             predicate: String,

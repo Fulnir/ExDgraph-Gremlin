@@ -114,7 +114,7 @@ defmodule ExdgraphGremlin do
 
   ## Examples
 
-      iex> {:ok, channel} = GRPC.Stub.connect(Application.get_env(:exdgraph, :dgraphServerGRPC))
+      iex> {:ok, channel} = GRPC.Stub.connect(Application.get_env(:ex_dgraph, :dgraphServerGRPC))
       ...> {:ok, graph} = Graph.new(channel)
       ...> {:ok, vertex} = graph
       ...> |> addV(Toon)
@@ -124,8 +124,7 @@ defmodule ExdgraphGremlin do
       "Bugs Bunny"
 
   """
-  @spec addV(Graph, Struct) :: 
-    {:ok, Vertex} | {:error, Error}
+  @spec addV(Graph, Struct) :: {:ok, Vertex} | {:error, Error}
   def addV(graph, struct_type) do
     vertex_struct = struct(struct_type)
     %{__struct__: vertex_type} = vertex_struct
@@ -265,6 +264,42 @@ defmodule ExdgraphGremlin do
   end
 
   @doc """
+  the outgoing tail vertex of the edge
+  https://github.com/tinkerpop/gremlin/wiki/Basic-Graph-Traversals
+  """
+  @spec outV({:ok, Edge}) :: Vertex
+  def outV({:ok, edge_in}) do
+    {:ok, edge_in.from}
+  end
+  @spec outV(Edge) :: Vertex
+  def outV(edge_in) do
+    {:ok, edge_in.from}
+  end
+  @doc """
+  the incoming head vertex of the edge
+  """
+  @spec inV({:ok, Edge}) :: Vertex
+  def inV({:ok, edge_in}) do
+    {:ok, edge_in.to}
+  end
+  @spec inV(Edge) :: Vertex
+  def inV(edge_in) do
+    {:ok, edge_in.to}
+  end
+
+  @doc """
+  both incoming and outgoing vertices of the edge
+  """
+  @spec bothV({:ok, Edge}) :: {Vertex, Vertex}
+  def bothV({:ok, edge_in}) do
+    {:ok, {edge_in.from, edge_in.to}}
+  end
+  @spec inV(Edge) :: Vertex
+  def bothV(edge_in) do
+    {:ok, {edge_in.from, edge_in.to}}
+  end
+
+  @doc """
   V Step
 
   The vertex iterator for the graph. Utilize this to iterate through all the vertices in the graph. 
@@ -303,8 +338,8 @@ defmodule ExdgraphGremlin do
   def v(graph, uid) do
     vertex = query_vertex(graph, uid)
     # Logger.info(fn -> "💡 vertex: #{inspect vertex}" end)
- #   struct_type = String.to_existing_atom("Elixir." <> vertex.vertex_type)
- #   struct = struct(struct_type, vertex)
+    #   struct_type = String.to_existing_atom("Elixir." <> vertex.vertex_type)
+    #   struct = struct(struct_type, vertex)
     # Logger.info(fn -> "💡 struct: #{inspect struct}" end)
     %Vertex{graph: graph, uid: uid, vertex_struct: vertex}
   end

@@ -23,3 +23,4 @@ erl_crash.dump
 exdgraph_gremlin-*.tar
 
 .DS_Store
+.elixir_ls
