@@ -1,0 +1,31 @@
+# Elixir CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-elixir/ for more details
+version: 2
+jobs:
+  build:
+    working_directory: ~/exdgraph_gremlin
+    docker:
+      # specify the version here
+      - image: circleci/elixir:1.6.0
+
+    steps:
+      - checkout
+      - run:
+            name: make build.sh executable
+            command: chmod +x scripts/build.sh
+      - run:
+            name: dgraph install
+            command: sudo sh scripts/install_dgraph.sh
+      - run:
+            name: dgraph run zero, run server
+            command: sudo scripts/build.sh
+
+      #
+      # Elixir scripts runs from testing.sh testing()
+      #
+      #- run: mix local.rebar --force
+      #- run: mix local.hex --force
+      #- run: mix deps.get
+      #- run: mix deps.compile
+      #- run: mix test<
