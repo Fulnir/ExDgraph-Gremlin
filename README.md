@@ -1,75 +1,99 @@
-# ExDgraph [![Build Status](https://travis-ci.org/ospaarmann/exdgraph.svg?branch=master)](https://travis-ci.org/ospaarmann/exdgraph) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# ![Logo](guides/images/logo.png) ExDgraph-Gremlin
+[![Build Status](https://semaphoreci.com/api/v1/fulnir/exdgraph/branches/master/shields_badge.svg)](https://semaphoreci.com/fulnir/exdgraph) [![CircleCI](https://circleci.com/bb/Fulnir/exdgraph-gremlin/tree/master.svg?style=svg)](https://circleci.com/bb/Fulnir/exdgraph-gremlin/tree/master)
+ [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.txt)
 
-**This is work in progress and not functional as of now. If you want to help, please drop me a message. Any help is greatly appreciated!**
+**Under Development**
 
-ExDgraph is the attempt to create a gRPC based client for the Dgraph database. WORK IN PROGRESS.
+**Attention**
 
-- Read more on Dgraph here: https://docs.dgraph.io
-- Read more on gRPC here: https://grpc.io/docs/
-- Read more on Google Protobuf here: https://developers.google.com/protocol-buffers/
+I've created a [ExDgraph Fork](https://github.com/Fulnir/exdgraph) (GRPC dgraph client) and it's possible, that this package will be deprecated in the near future. 
+Or I create a package as a layer on the top of the GPRC-Client.
 
-I am using [tony612/grpc-elixir](https://github.com/tony612/grpc-elixir) as Elixir gRPC implementation and [tony612/protobuf-elixir](https://github.com/tony612/protobuf-elixir) as pure Elixir implementation of [Google Protobuf](https://developers.google.com/protocol-buffers/).
 
-## Installation
+# Gremlin graph support
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `exdgraph` to your list of dependencies in `mix.exs`:
+In this case, only elixir functions which simulate gremlin.
 
-```elixir
-def deps do
-  [
-    {:exdgraph, "~> 0.1.0", github: "ospaarmann/exdgraph", branch: "master"}
-  ]
-end
+## Gremlin Steps
+
+### AddVertex Step
+The `addV`-step is used to add vertices to the graph ([addV step](http://tinkerpop.apache.org/docs/current/reference/#addvertex-step))
+
+  
+The following Gremlin statement inserts a "toon" vertex into the graph
+```
+# run a operation using the Gremlin Console. 
+gremlin> g.addV('toon')
+==>v[13]
 ```
 
-## Usage
-
-Again, this is work in progress. I'll add more examples on how to use this on the go. So far you can connect to a server and run a simple query. I recommend installing and running Dgraph locally with Docker. You find information on how to do that [here](https://docs.dgraph.io/get-started/#from-docker-image). To use this simple example you first have to [import the example data](https://docs.dgraph.io/get-started/#step-3-run-queries). You can just open [http://localhost:8000](http://localhost:8000) in your browser when Dgraph is running to execute and visualize queries using Ratel.
-
-### Simple example
-
-Install ExDgraph and run an interactive console with `iex -S mix`.
-
+And now with **Elixir**.
 ```elixir
-# Connect to Server
-{:ok, channel} = GRPC.Stub.connect("localhost:9080")
+{:ok, channel} = GRPC.Stub.connect(Application.get_env(:exdgraph, :dgraphServerGRPC))
+{:ok, graph} = Graph.new(channel)
 
-# Define query (for now just a string)
-query = """
-  {
-    starwars(func: anyofterms(name, "Star Wars"))
-    {
-      uid
-      name
-      release_date
-      starring
-      {
-        name
-      }
-    }
-  }
-"""
+graph
+|> addV(Toon)
+```
+The first lines create the `Graph` and connect it to `dgraph`. These are not listed in all samples.
 
-# Build request
-request = ExDgraph.Api.Request.new(query: query)
-# Send request to server
-{:ok, msg} = channel |> ExDgraph.Api.Dgraph.Stub.query(request)
-# Parse result
-Poison.decode!(msg.json)
+### AddProperty Step
+The `property`-step is used to add properties to the elements of the graph. ([property step](http://tinkerpop.apache.org/docs/current/reference/#addproperty-step))
+
+The following Gremlin statement inserts the "*Bugs Bunny*" vertex into the graph
+```
+gremlin> g.addV('toon').property('name','Bugs Bunny').property('type','Toon')
+==>v[13]
 ```
 
-## Roadmap
+And now with **Elixir**.
+```elixir
+{:ok, channel} = GRPC.Stub.connect(Application.get_env(:exdgraph, :dgraphServerGRPC))
+{:ok, graph} = Graph.new(channel)
 
-- [X] Connect to Dgraph server via gRPC
-- [ ] Let GenServer handle connection and queries
-- [ ] Model request
-- [ ] Model response
-- [ ] Query builder
-- [ ] Query executer
-- [ ] Mutation builder
-- [ ] Mutation executer
-- [ ] Operation builder (for Alter)
-- [ ] Operation executer
-- [ ] Poolboy for connection pooling
-- [ ] More intelligent query builder for nested queries
+graph
+|> addV(Toon)
+|> property("name", "Bugs Bunny")
+|> property("type", "Toon")
+```
+
+### AddEdge Step
+The `addE`-step is used to add an edge between two vertices  ([addE step](http://tinkerpop.apache.org/docs/current/reference/#addedge-step)) 
+
+
+```elixir
+marko =
+    graph
+    |> addV(Person)
+    |> property("name", "Makro")
+
+peter =
+    graph
+    |> addV(Person)
+    |> property("name", "Peter")
+
+# gremlin> g.addE('knows').from(marko).to(peter)
+graph
+|> addE("knows")
+|> from(marko)
+|> to(peter)
+```
+
+###  V Step
+
+
+```elixir
+edwin =
+    graph
+    |> addV(Person)
+    |> property("name", "Edwin")
+# Get a vertex with the unique identifier.
+vertex =
+    graph
+    |> v(edwin.uid)
+```
+
+
+
+
+Copyright © 2018 Edwin Bühler  [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.txt)
