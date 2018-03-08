@@ -1,12 +1,12 @@
 # ExDgraph-Gremlin
-[![Build Status](https://semaphoreci.com/api/v1/fulnir/exdgraph-gremlin/branches/master/shields_badge.svg)](https://semaphoreci.com/fulnir/exdgraph-gremlin) [![codecov](https://codecov.io/bb/fulnir/dexgraph/branch/master/graph/badge.svg)](https://codecov.io/bb/fulnir/dexgraph) [![Ebert](https://ebertapp.io/github/Fulnir/dexgraph.svg)](https://ebertapp.io/github/Fulnir/dexgraph)
+[![Build Status](https://semaphoreci.com/api/v1/fulnir/exdgraph-gremlin/branches/master/shields_badge.svg)](https://semaphoreci.com/fulnir/exdgraph-gremlin) [![codecov](https://codecov.io/bb/fulnir/exdgraph-gremlin/branch/master/graph/badge.svg)](https://codecov.io/bb/fulnir/exdgraph-gremlin) [![Ebert](https://ebertapp.io/github/Fulnir/exdgraph-gremlin.svg)](https://ebertapp.io/github/Fulnir/exdgraph-gremlin)
  [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE.md)
 
 **Work In Progress**
+The primary way in which graphs are processed are via graph traversals. In this package, elixir functions are which simulate gremlin.
 
-**Attention**
+This package is built on top of [ExDgraph](https://github.com/ospaarmann/exdgraph), a grpc-client for [dgraph](dgraph.io). Which is also work in progress.
 
-This package is built on top of [ExDgraph](https://github.com/ospaarmann/exdgraph), which is also work in progress.
 
 
 # Gremlin like graph traversals
