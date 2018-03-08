@@ -92,6 +92,38 @@ vertex =
     |> v(edwin.uid)
 ```
 
+It is important to note that in Gremlin, vertices are incident to edges and edges are incident to vertices.The reason for this will become apparent later when making use of element properties in path expressions. The reserved terms for denoting adjacency selection are the steps outE, inE, bothE, outV, inV, and bothV.
+
+`outV`	the outgoing tail vertex of the edge
+`inV`	the incoming head vertex of the edge
+`bothV`	both incoming and outgoing vertices of the edge
+
+
+```elixir
+{:ok, peter} =
+    graph
+    |> addV(Person)
+    |> property("name", "Peter")
+
+{:ok, edge} =
+    graph
+    |> addV(Person)
+    |> property("name", "John")
+    |> addE("knows")
+    |> to(peter)
+
+{:ok, out_vertex} =
+    edge
+    |> outV
+
+{:ok, in_vertex} =
+    edge
+    |> inV
+
+{:ok, {b_out_vertex, b_in_vertex}} =
+    edge
+    |> bothV
+```
 
 
 

@@ -102,7 +102,7 @@ defmodule ExdgraphGremlin.GremlinAddTest do
     {:ok, marko} =
       graph
       |> addV(Person)
-      |> property("name", "Makro")
+      |> property("name", "Marko")
 
     {:ok, peter} =
       graph
