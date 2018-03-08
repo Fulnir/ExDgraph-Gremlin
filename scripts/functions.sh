@@ -28,7 +28,7 @@ function start {
   echo -e "🛠 Starting first server."
   # dgraph v1.0.3 ports changed 
   #dgraph server --memory_mb 2048 --zero localhost:5082 -o 2
-  dgraph server --memory_mb 2048 --zero localhost:3080 -o 2
+  dgraph server --memory_mb 2048 --zero localhost:5080
   # Wait for membership sync to happen.
   
   sleep $sleepTime
@@ -39,7 +39,7 @@ function start {
 function startZero {
   
 	echo -e "🛠 Starting dgraph zero.\n"
-  dgraph zero --port_offset -2000
+  dgraph zero
   # To ensure dgraph doesn't start before dgraphzero.
 	# It takes time for zero to start on travis(mac).
 

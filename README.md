@@ -1,5 +1,5 @@
 # ExDgraph-Gremlin
-[![Build Status](https://semaphoreci.com/api/v1/fulnir/exdgraph-gremlin/branches/master/shields_badge.svg)](https://semaphoreci.com/fulnir/exdgraph-gremlin) [![codecov](https://codecov.io/bb/fulnir/exdgraph-gremlin/branch/master/graph/badge.svg)](https://codecov.io/bb/fulnir/exdgraph-gremlin) [![Ebert](https://ebertapp.io/github/Fulnir/exdgraph-gremlin.svg)](https://ebertapp.io/github/Fulnir/exdgraph-gremlin)
+[![Build Status](https://semaphoreci.com/api/v1/fulnir/exdgraph-gremlin/branches/master/shields_badge.svg)](https://semaphoreci.com/fulnir/exdgraph-gremlin) [![codecov](https://codecov.io/bb/fulnir/exdgraph-gremlin/branch/master/graph/badge.svg)](https://codecov.io/bb/fulnir/exdgraph-gremlin) [![Ebert](https://ebertapp.io/github/Fulnir/ExDgraph-Gremlin.svg)](https://ebertapp.io/github/Fulnir/ExDgraph-Gremlin)
  [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE.md)
 
 **Work In Progress**
