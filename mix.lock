@@ -6,7 +6,7 @@
   "cowlib": {:hex, :cowlib, "2.1.0", "f73658b93dd043af40400c3e4fd997068ebd0c617f8c8f4cd003a1a78ebf94f5", [:rebar3], [], "hexpm"},
   "db_connection": {:git, "https://github.com/elixir-ecto/db_connection.git", "3b34256817f19430e0f1e654097d127c75ea73d7", []},
   "earmark": {:hex, :earmark, "1.2.4", "99b637c62a4d65a20a9fb674b8cffb8baa771c04605a80c911c4418c69b75439", [:mix], [], "hexpm"},
-  "ex_dgraph": {:git, "https://github.com/ospaarmann/exdgraph.git", "4e3e4cca7fb733f319b79f7f3e6c3c086f18ad2e", [branch: "master"]},
+  "ex_dgraph": {:git, "https://github.com/ospaarmann/exdgraph.git", "bf5811ee6f9258b41929139e839ba3181ce73bc7", []},
   "ex_doc": {:hex, :ex_doc, "0.18.3", "f4b0e4a2ec6f333dccf761838a4b253d75e11f714b85ae271c9ae361367897b7", [:mix], [{:earmark, "~> 1.1", [hex: :earmark, repo: "hexpm", optional: false]}], "hexpm"},
   "exdgraph": {:git, "https://github.com/ospaarmann/exdgraph.git", "4e3e4cca7fb733f319b79f7f3e6c3c086f18ad2e", [branch: "master"]},
   "fs": {:hex, :fs, "0.9.2", "ed17036c26c3f70ac49781ed9220a50c36775c6ca2cf8182d123b6566e49ec59", [:rebar], [], "hexpm"},

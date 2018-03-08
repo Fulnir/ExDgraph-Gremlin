@@ -10,7 +10,8 @@ defmodule ExdgraphGremlin.Graph do
   The graph properties.
   Reserved for a cache (gen_server) and other
   """
-  defstruct channel: GRPC.Channel,
+  defstruct channel: GRPC.Channel, # FIXME: deprecated. Using conn
+            conn: DBConnection,
             vertex: Vertex,
             edge: Edge,
             vertex_cache: nil
@@ -18,7 +19,7 @@ defmodule ExdgraphGremlin.Graph do
   @doc """
   Creates a new graph
   """
-  def new(channel) do
-    {:ok, %Graph{channel: channel}}
+  def new(conn) do
+    {:ok, %Graph{conn: conn}}
   end
 end

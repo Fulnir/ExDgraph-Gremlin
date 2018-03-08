@@ -114,8 +114,8 @@ defmodule ExdgraphGremlin do
 
   ## Examples
 
-      iex> {:ok, channel} = GRPC.Stub.connect(Application.get_env(:ex_dgraph, :dgraphServerGRPC))
-      ...> {:ok, graph} = Graph.new(channel)
+      iex> conn = ExDgraph.conn()
+      ...> {:ok, graph} = Graph.new(conn)
       ...> {:ok, vertex} = graph
       ...> |> addV(Toon)
       ...> |> property("name", "Bugs Bunny")
@@ -212,6 +212,7 @@ defmodule ExdgraphGremlin do
         end
 
       {:error, error} ->
+        Logger.info(fn -> "Error: #{inspect error}" end)
         {:error, error}
 
       _ ->

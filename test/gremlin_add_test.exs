@@ -54,11 +54,22 @@ defmodule ExdgraphGremlin.GremlinAddTest do
     end)
 
     [channel: channel]
+    conn = ExDgraph.conn()
+    # TODO: It fails right at the connect on TravisCI
+    ExDgraph.operation(conn, %{drop_all: true})
+    ExDgraph.operation(conn, %{schema: @testing_schema})
+
+    on_exit(fn ->
+      # close channel ?
+      :ok
+    end)
+
+    [conn: conn]
   end
 
-  test "Gremlin AddVertex Step ; AddProperty Step", %{channel: channel} do
+  test "Gremlin AddVertex Step ; AddProperty Step", %{conn: conn} do
     # {:ok, channel} = GRPC.Stub.connect(Application.get_env(:exdgraph, :dgraphServerGRPC))
-    {:ok, graph} = Graph.new(channel)
+    {:ok, graph} = Graph.new(conn)
 
     graph
     |> addV(Toon)
@@ -70,9 +81,9 @@ defmodule ExdgraphGremlin.GremlinAddTest do
     assert "Toon" == toon_one.type
   end
 
-  test "Gremlin AddVertex Step ; AddProperty Step ! version", %{channel: channel} do
+  test "Gremlin AddVertex Step ; AddProperty Step ! version", %{conn: conn} do
     # {:ok, channel} = GRPC.Stub.connect(Application.get_env(:exdgraph, :dgraphServerGRPC))
-    {:ok, graph} = Graph.new(channel)
+    {:ok, graph} = Graph.new(conn)
 
     graph
     |> addV!(Toon)
@@ -84,9 +95,9 @@ defmodule ExdgraphGremlin.GremlinAddTest do
     assert "Toon" == toon_one.type
   end
 
-  test "Gremlin AddEdge Step", %{channel: channel} do
+  test "Gremlin AddEdge Step", %{conn: conn} do
     # {:ok, channel} = GRPC.Stub.connect(Application.get_env(:exdgraph, :dgraphServerGRPC))
-    {:ok, graph} = Graph.new(channel)
+    {:ok, graph} = Graph.new(conn)
 
     {:ok, marko} =
       graph
@@ -147,9 +158,9 @@ defmodule ExdgraphGremlin.GremlinAddTest do
     assert "Peter" == b_in_vertex.vertex_struct.name
   end
 
-  test "Gremlin Vertex Step", %{channel: channel} do
+  test "Gremlin Vertex Step", %{conn: conn} do
     # {:ok, channel} = GRPC.Stub.connect(Application.get_env(:exdgraph, :dgraphServerGRPC))
-    {:ok, graph} = Graph.new(channel)
+    {:ok, graph} = Graph.new(conn)
 
     {:ok, edwin} =
       graph

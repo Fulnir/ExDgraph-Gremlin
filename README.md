@@ -1,18 +1,19 @@
-# ![Logo](guides/images/logo.png) ExDgraph-Gremlin
-[![Build Status](https://semaphoreci.com/api/v1/fulnir/exdgraph/branches/master/shields_badge.svg)](https://semaphoreci.com/fulnir/exdgraph) [![CircleCI](https://circleci.com/bb/Fulnir/exdgraph-gremlin/tree/master.svg?style=svg)](https://circleci.com/bb/Fulnir/exdgraph-gremlin/tree/master)
- [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.txt)
+# ExDgraph-Gremlin
+[![Build Status](https://semaphoreci.com/api/v1/fulnir/exdgraph-gremlin/branches/master/shields_badge.svg)](https://semaphoreci.com/fulnir/exdgraph-gremlin) [![codecov](https://codecov.io/bb/fulnir/dexgraph/branch/master/graph/badge.svg)](https://codecov.io/bb/fulnir/dexgraph) [![Ebert](https://ebertapp.io/github/Fulnir/dexgraph.svg)](https://ebertapp.io/github/Fulnir/dexgraph)
+ [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE.md)
 
-**Under Development**
+**Work In Progress**
 
 **Attention**
 
-I've created a [ExDgraph Fork](https://github.com/Fulnir/exdgraph) (GRPC dgraph client) and it's possible, that this package will be deprecated in the near future. 
-Or I create a package as a layer on the top of the GPRC-Client.
+This package is built on top of [ExDgraph](https://github.com/ospaarmann/exdgraph), which is also work in progress.
 
 
-# Gremlin graph support
+# Gremlin like graph traversals
 
 In this case, only elixir functions which simulate gremlin.
+
+The primary way in which graphs are processed are via graph traversals.
 
 ## Gremlin Steps
 
@@ -29,13 +30,12 @@ gremlin> g.addV('toon')
 
 And now with **Elixir**.
 ```elixir
-{:ok, channel} = GRPC.Stub.connect(Application.get_env(:exdgraph, :dgraphServerGRPC))
-{:ok, graph} = Graph.new(channel)
+{:ok, graph} = Graph.new(ExDgraph.conn())
 
 graph
 |> addV(Toon)
 ```
-The first lines create the `Graph` and connect it to `dgraph`. These are not listed in all samples.
+The first line create the `Graph` and connect it to `dgraph`. This is not listed in all samples.
 
 ### AddProperty Step
 The `property`-step is used to add properties to the elements of the graph. ([property step](http://tinkerpop.apache.org/docs/current/reference/#addproperty-step))
@@ -48,8 +48,7 @@ gremlin> g.addV('toon').property('name','Bugs Bunny').property('type','Toon')
 
 And now with **Elixir**.
 ```elixir
-{:ok, channel} = GRPC.Stub.connect(Application.get_env(:exdgraph, :dgraphServerGRPC))
-{:ok, graph} = Graph.new(channel)
+{:ok, graph} = Graph.new(ExDgraph.conn())
 
 graph
 |> addV(Toon)
@@ -96,4 +95,4 @@ vertex =
 
 
 
-Copyright © 2018 Edwin Bühler  [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.txt)
+Copyright © 2018 Edwin Bühler  [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE.md)

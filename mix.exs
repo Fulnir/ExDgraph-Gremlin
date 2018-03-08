@@ -10,7 +10,15 @@ defmodule ExdgraphGremlin.MixProject do
       deps: deps(),
       description: description(),
       package: package(),
-
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test,
+        "coveralls.json": :test,
+        "coveralls.circle": :test
+      ],
       # Docs
       name: "ExDgraph-Gremlin",
       source_url: "https://github.com/fulnir/exdgraph_gremlin",
@@ -22,7 +30,7 @@ defmodule ExdgraphGremlin.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :ex_dgraph]
     ]
   end
 
@@ -30,9 +38,17 @@ defmodule ExdgraphGremlin.MixProject do
   defp deps do
     [
       {:grpc, github: "tony612/grpc-elixir"},
-      {:ex_dgraph, "~> 0.1.0", github: "ospaarmann/exdgraph", branch: "master"},
+      # {:ex_dgraph, "~> 0.1.0", github: "ospaarmann/exdgraph", branch: "master"},
+      {:ex_dgraph, github: "ospaarmann/exdgraph"},
       {:poison, "~> 3.1"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
+      # mix credo übperprüft den Styleguide
+      {:credo, "~> 0.9.0-rc1", only: [:dev, :test]},
+      # For Dash  mix docs.dash
+      {:ex_dash, "~> 0.1.5", only: :dev},
+      # mix inch
+      {:inch_ex, "~> 0.5", only: [:dev, :test]},
+      {:excoveralls, "~> 0.7.2", only: :test},
       {:mix_test_watch, "~> 0.2", only: :dev, runtime: false},
       {:bunt, "~> 0.2.0"}
     ]

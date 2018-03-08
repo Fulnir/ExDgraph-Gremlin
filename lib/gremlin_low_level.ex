@@ -4,15 +4,18 @@ defmodule ExdgraphGremlin.LowLevel do
   """
   require Logger
   alias ExdgraphGremlin.LowLevel
-
+  import ExDgraph
+  #alias ExDgraph.{Mutation}
   @doc """
-  Creates a mutaion request with a commit_now and send it to dgraph.
+  Creates a mutation request with a commit_now and send it to dgraph.
   """
   def mutate_with_commit(graph, nquad) do
-    channel = graph.channel
-    request = ExDgraph.Api.Mutation.new(set_nquads: nquad, commit_now: true)
     # Logger.info(fn -> "💡 request: #{inspect request}" end)
-    channel |> ExDgraph.Api.Dgraph.Stub.mutate(request)
+    #channel = graph.channel
+    #request = ExDgraph.Api.Mutation.new(set_nquads: nquad, commit_now: true)
+    #channel |> ExDgraph.Api.Dgraph.Stub.mutate(request)
+    conn = graph.conn
+    {:ok, _} = ExDgraph.mutation(conn, nquad)
   end
 
   @doc """
@@ -40,17 +43,21 @@ defmodule ExdgraphGremlin.LowLevel do
 
   """
   def query_vertex(graph, vertex_uid) do
-    channel = graph.channel
+    conn = graph.conn
 
     query = """
     { vertex(func: uid(#{vertex_uid})) { expand(_all_) } }
     """
 
-    request = ExDgraph.Api.Request.new(query: query)
-    {:ok, msg} = channel |> ExDgraph.Api.Dgraph.Stub.query(request)
+    {:ok, query_msg} = ExDgraph.query(conn, query)
+    res = query_msg.result
+
+    #request = ExDgraph.Api.Request.new(query: query)
+    #{:ok, msg} = channel |> ExDgraph.Api.Dgraph.Stub.query(request)
     # Logger.info(fn -> "💡 msg.json: #{inspect msg.json}" end)
-    decoded_json = Poison.decode!(msg.json)
-    vertices = decoded_json["vertex"]
+    #Logger.info(fn -> "💡res: #{inspect res}" end)
+    #decoded_json = Poison.decode!(query_msg.json)
+    vertices = res["vertex"]
     [vertex_one] = vertices
     vertex = for {key, val} <- vertex_one, into: %{}, do: {String.to_atom(key), val}
     struct_type = String.to_existing_atom("Elixir." <> vertex.vertex_type)
@@ -61,18 +68,19 @@ defmodule ExdgraphGremlin.LowLevel do
 
   """
   def query_vertex(graph, search_type, predicate, object, display) do
-    channel = graph.channel
+    conn = graph.conn
     if display != "expand(_all_)" do
       display = "vertex_type " <> display
     end
     query = """
     { vertices(func: #{search_type}(#{predicate}, \"#{object}\")) { #{display} } }
     """
-
-    request = ExDgraph.Api.Request.new(query: query)
-    {:ok, msg} = channel |> ExDgraph.Api.Dgraph.Stub.query(request)
-    decoded_json = Poison.decode!(msg.json)
-    vertices = decoded_json["vertices"]
+    {:ok, query_msg} = ExDgraph.query(conn, query)
+    res = query_msg.result
+    #request = ExDgraph.Api.Request.new(query: query)
+    #{:ok, msg} = channel |> ExDgraph.Api.Dgraph.Stub.query(request)
+    #decoded_json = Poison.decode!(msg.json)
+    vertices = res["vertices"]
     #Logger.info(fn -> "💡 vertices: #{inspect vertices}" end)
     map =
       Enum.map(vertices, fn vertex_map ->
@@ -103,18 +111,19 @@ defmodule ExdgraphGremlin.LowLevel do
   end
 
   def query_eq_vertex!(graph, predicate, object, display) do
-    channel = graph.channel
+    conn = graph.conn
     if display != "expand(_all_)" do
       display = "vertex_type " <> display
     end
     query = """
     { vertices(func: eq(#{predicate}, \"#{object}\")) { #{display} } }
     """
-
-    request = ExDgraph.Api.Request.new(query: query)
-    {:ok, msg} = channel |> ExDgraph.Api.Dgraph.Stub.query(request)
-    decoded_json = Poison.decode!(msg.json)
-    vertices = decoded_json["vertices"]
+    {:ok, query_msg} = ExDgraph.query(conn, query)
+    res = query_msg.result
+    #request = ExDgraph.Api.Request.new(query: query)
+    #{:ok, msg} = channel |> ExDgraph.Api.Dgraph.Stub.query(request)
+    #decoded_json = Poison.decode!(msg.json)
+    vertices = res["vertices"]
     #Logger.info(fn -> "💡 vertices: #{inspect vertices}" end)
     map =
       Enum.map(vertices, fn vertex_map ->
