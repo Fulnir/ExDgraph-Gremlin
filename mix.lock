@@ -9,7 +9,7 @@
   "db_connection": {:git, "https://github.com/elixir-ecto/db_connection.git", "3b34256817f19430e0f1e654097d127c75ea73d7", []},
   "earmark": {:hex, :earmark, "1.2.4", "99b637c62a4d65a20a9fb674b8cffb8baa771c04605a80c911c4418c69b75439", [:mix], [], "hexpm"},
   "ex_dash": {:hex, :ex_dash, "0.1.5", "cec8f0820f88539eeba71e88e12f64db1588c443e92216d881512097d88ef0ad", [:mix], [{:ex_doc, "~> 0.15", [hex: :ex_doc, repo: "hexpm", optional: false]}, {:floki, "~> 0.14.0", [hex: :floki, repo: "hexpm", optional: false]}], "hexpm"},
-  "ex_dgraph": {:git, "https://github.com/ospaarmann/exdgraph.git", "bf5811ee6f9258b41929139e839ba3181ce73bc7", []},
+  "ex_dgraph": {:git, "https://github.com/ospaarmann/exdgraph.git", "e0f8244487789900be933a94b41c568067e4512b", []},
   "ex_doc": {:hex, :ex_doc, "0.18.3", "f4b0e4a2ec6f333dccf761838a4b253d75e11f714b85ae271c9ae361367897b7", [:mix], [{:earmark, "~> 1.1", [hex: :earmark, repo: "hexpm", optional: false]}], "hexpm"},
   "excoveralls": {:hex, :excoveralls, "0.7.5", "339e433e5d3bce09400dc8de7b9040741a409c93917849916c136a0f51fdc183", [:mix], [{:exjsx, ">= 3.0.0", [hex: :exjsx, repo: "hexpm", optional: false]}, {:hackney, ">= 0.12.0", [hex: :hackney, repo: "hexpm", optional: false]}], "hexpm"},
   "exdgraph": {:git, "https://github.com/ospaarmann/exdgraph.git", "4e3e4cca7fb733f319b79f7f3e6c3c086f18ad2e", [branch: "master"]},

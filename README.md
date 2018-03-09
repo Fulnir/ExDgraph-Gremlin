@@ -5,7 +5,7 @@
 **Work In Progress**
 The primary way in which graphs are processed are via graph traversals. In this package, elixir functions are which simulate gremlin.
 
-This package is built on top of [ExDgraph](https://github.com/ospaarmann/exdgraph), a grpc-client for [dgraph](dgraph.io). Which is also work in progress.
+This package is built on top of [ExDgraph](https://github.com/ospaarmann/exdgraph), a grpc-client for [dgraph](http://dgraph.io). Which is also work in progress.
 
 
 

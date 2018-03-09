@@ -49,19 +49,25 @@ defmodule ExdgraphGremlin.LowLevel do
     { vertex(func: uid(#{vertex_uid})) { expand(_all_) } }
     """
 
-    {:ok, query_msg} = ExDgraph.query(conn, query)
-    res = query_msg.result
+    case ExDgraph.Query.query(conn, query) do
+      {:ok, query_msg} ->
+        res = query_msg.result
+        vertices = res["vertex"]
+        [vertex_one] = vertices
+        vertex = for {key, val} <- vertex_one, into: %{}, do: {String.to_atom(key), val}
+        struct_type = String.to_existing_atom("Elixir." <> vertex.vertex_type)
+        struct(struct_type, vertex)
+      {:error, error} ->
+        Logger.error(fn -> "Error: #{inspect error}" end)
+        {:error, error}
+      end
 
     # request = ExDgraph.Api.Request.new(query: query)
     # {:ok, msg} = channel |> ExDgraph.Api.Dgraph.Stub.query(request)
     # Logger.info(fn -> "💡 msg.json: #{inspect msg.json}" end)
     # Logger.info(fn -> "💡res: #{inspect res}" end)
     # decoded_json = Poison.decode!(query_msg.json)
-    vertices = res["vertex"]
-    [vertex_one] = vertices
-    vertex = for {key, val} <- vertex_one, into: %{}, do: {String.to_atom(key), val}
-    struct_type = String.to_existing_atom("Elixir." <> vertex.vertex_type)
-    struct(struct_type, vertex)
+
   end
 
   @doc """
@@ -78,21 +84,30 @@ defmodule ExdgraphGremlin.LowLevel do
     { vertices(func: #{search_type}(#{predicate}, \"#{object}\")) { #{display} } }
     """
 
-    {:ok, query_msg} = ExDgraph.query(conn, query)
-    res = query_msg.result
-    # request = ExDgraph.Api.Request.new(query: query)
-    # {:ok, msg} = channel |> ExDgraph.Api.Dgraph.Stub.query(request)
-    # decoded_json = Poison.decode!(msg.json)
-    vertices = res["vertices"]
-    # Logger.info(fn -> "💡 vertices: #{inspect vertices}" end)
-    map =
-      Enum.map(vertices, fn vertex_map ->
-        vertex = for {key, val} <- vertex_map, into: %{}, do: {String.to_atom(key), val}
-        struct_type = String.to_existing_atom("Elixir." <> vertex.vertex_type)
-        struct(struct_type, vertex)
-      end)
+    case ExDgraph.Query.query(conn, query) do
+      {:ok, query_msg} ->
+        res = query_msg.result
+        # request = ExDgraph.Api.Request.new(query: query)
+        # {:ok, msg} = channel |> ExDgraph.Api.Dgraph.Stub.query(request)
+        # decoded_json = Poison.decode!(msg.json)
+        vertices = res["vertices"]
+        # Logger.info(fn -> "💡 vertices: #{inspect vertices}" end)
+        map =
+          Enum.map(vertices, fn vertex_map ->
+            vertex = for {key, val} <- vertex_map, into: %{}, do: {String.to_atom(key), val}
+            #Logger.info(fn -> "💡 vertex.vertex_type: #{inspect vertex.vertex_type}" end)
+            struct_type = String.to_existing_atom("Elixir." <> vertex.vertex_type)
+            struct(struct_type, vertex)
+          end)
 
-    {:ok, map}
+        {:ok, map}
+
+      {:error, error} ->
+        Logger.error(fn -> "Error: #{inspect error}" end)
+        {:error, error}
+    end
+
+
   end
 
   @doc """
@@ -104,8 +119,7 @@ defmodule ExdgraphGremlin.LowLevel do
   end
 
   def query_vertex(graph, search_type, predicate, object) do
-    {:ok, map} = query_vertex(graph, search_type, predicate, object, "expand(_all_)")
-    map
+    query_vertex(graph, search_type, predicate, object, "expand(_all_)")
   end
 
   @doc """

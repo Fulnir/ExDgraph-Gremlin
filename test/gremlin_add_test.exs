@@ -42,20 +42,8 @@ defmodule ExdgraphGremlin.GremlinAddTest do
 
   setup do
     # Logger.info fn -> "💡 GRPC-Server: #{Application.get_env(:ex_dgraph, :dgraphServerGRPC)}" end
-    {:ok, channel} = GRPC.Stub.connect(Application.get_env(:ex_dgraph, :dgraphServerGRPC))
-    operation = ExDgraph.Api.Operation.new(drop_all: true)
-    {:ok, _} = channel |> ExDgraph.Api.Dgraph.Stub.alter(operation)
-    operation = ExDgraph.Api.Operation.new(schema: @testing_schema)
-    {:ok, _} = channel |> ExDgraph.Api.Dgraph.Stub.alter(operation)
 
-    on_exit(fn ->
-      # close channel ?
-      :ok
-    end)
-
-    [channel: channel]
     conn = ExDgraph.conn()
-    # TODO: It fails right at the connect on TravisCI
     ExDgraph.operation(conn, %{drop_all: true})
     ExDgraph.operation(conn, %{schema: @testing_schema})
 
@@ -76,7 +64,8 @@ defmodule ExdgraphGremlin.GremlinAddTest do
     |> property("name", "Duffy Duck")
     |> property("type", "Toon")
 
-    [toon_one] = ExdgraphGremlin.LowLevel.query_vertex(graph, "anyofterms", "name", "Duffy Duck")
+    {status, [toon_one]} = ExdgraphGremlin.LowLevel.query_vertex(graph, "anyofterms", "name", "Duffy Duck")
+    assert status == :ok
     assert "Duffy Duck" == toon_one.name
     assert "Toon" == toon_one.type
   end
@@ -90,7 +79,8 @@ defmodule ExdgraphGremlin.GremlinAddTest do
     |> property!("name", "Bugs Bunny")
     |> property!("type", "Toon")
 
-    [toon_one] = ExdgraphGremlin.LowLevel.query_vertex(graph, "anyofterms", "name", "Bugs Bunny")
+    {status, [toon_one]} = ExdgraphGremlin.LowLevel.query_vertex(graph, "anyofterms", "name", "Bugs Bunny")
+    assert status == :ok
     assert "Bugs Bunny" == toon_one.name
     assert "Toon" == toon_one.type
   end
