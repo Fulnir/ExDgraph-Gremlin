@@ -4,7 +4,7 @@ defmodule SimpleBasicTest do
   use ExUnit.Case
   require Logger
   import ExDgraph
-  import GRPC
+  import GRPC.Stub
   @testing_schema "id: string @index(exact).
       name: string @index(exact, term) @count .
       age: int @index(int) .

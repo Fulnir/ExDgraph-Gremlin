@@ -252,9 +252,9 @@ defmodule ExdgraphGremlin do
     case edge_in do
       {:ok, edge} ->
         if edge.from != nil do
-          assigned = mutate_edge(edge.graph, edge.from.uid, edge.predicate, to.uid)
+          mutate_edge(edge.graph, edge.from.uid, edge.predicate, to.uid)
         else
-          assigned = mutate_edge(edge.graph, edge.graph.vertex.uid, edge.predicate, to.uid)
+          mutate_edge(edge.graph, edge.graph.vertex.uid, edge.predicate, to.uid)
         end
 
         {:ok, %Edge{edge | to: to}}

@@ -10,3 +10,21 @@ if Process.whereis(ExDgraph.pool_name()) == nil do
 end
 
 Process.flag(:trap_exit, true)
+
+defmodule Person do
+  @moduledoc false
+
+  @doc """
+  A sample struct
+  """
+  defstruct person_id: String,
+            name: String,
+            alias_name: [],
+            is_jedi: Boolean,
+            gender: String,
+            age: Integer,
+            friend: [],
+            knows: Person,
+            comment: String
+
+end

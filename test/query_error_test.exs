@@ -22,12 +22,12 @@ defmodule ExdgraphGremlin.QueryErrorTest do
   """
   require Logger
   use ExUnit.Case
-  import ExDgraph
+#  import ExDgraph
   import ExdgraphGremlin
   alias ExdgraphGremlin.Toon
-  alias ExdgraphGremlin.Person
+#  alias ExdgraphGremlin.Person
   alias ExdgraphGremlin.Graph
-  import GRPC
+#  import GRPC
   # Extend the timeout
   @moduletag timeout: 120_000
 
