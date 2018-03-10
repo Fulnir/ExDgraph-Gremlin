@@ -17,7 +17,8 @@ defmodule ExdgraphGremlin.MixProject do
         "coveralls.post": :test,
         "coveralls.html": :test,
         "coveralls.json": :test,
-        "coveralls.circle": :test
+        "coveralls.circle": :test,
+        "coveralls.semaphore": :test
       ],
       # Docs
       name: "ExDgraph-Gremlin",
