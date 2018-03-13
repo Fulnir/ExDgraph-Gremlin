@@ -10,7 +10,8 @@ defmodule ExdgraphGremlin.Graph do
   The graph properties.
   Reserved for a cache (gen_server) and other
   """
-  defstruct channel: GRPC.Channel, # FIXME: deprecated. Using conn
+  # FIXME: deprecated. Using conn
+  defstruct channel: GRPC.Channel,
             conn: DBConnection,
             vertex: Vertex,
             edge: Edge,

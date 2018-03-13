@@ -187,8 +187,9 @@ defmodule ExdgraphGremlin.LowLevel do
         # TODO: vertex_type or other name? or user defined?
         # ':vertex_type' is more excactly. ':type' could be conflicted with user fields
         map_from_struct = Map.put(map_from_struct, :vertex_type, struct_name)
-        #Logger.info(fn -> "💡 result: #{inspect(map_from_struct)}" end)
+        # Logger.info(fn -> "💡 result: #{inspect(map_from_struct)}" end)
         mutate_map(conn, map_from_struct)
+
       _ ->
         {:error, "The value is not a struct"}
     end
@@ -217,35 +218,22 @@ defmodule ExdgraphGremlin.LowLevel do
         # TODO: Check schema! Is it a list like alias_name: [string] ?
         # check_schema()
         lambda_list_element = fn each, list_mutate_string ->
+          # Refactoring with external funs isn't better !
+          # credo:disable-for-lines:2
           list_mutate_string =
             case each do
               %{__struct__: struct_name} ->
-                #Logger.debug(fn -> "💡 1 object_value: #{inspect(object_value)}" end)
+                # Logger.debug(fn -> "💡 1 object_value: #{inspect(object_value)}" end)
                 %{__struct__: struct_name} = each
                 map_from_struct = Map.from_struct(each)
                 # Giving Nodes a Type https://docs.dgraph.io/howto/#giving-nodes-a-type
                 # TODO: vertex_type or other name? or user defined?
                 # ':vertex_type' is mor excactly. ':type' could be conflicted with user fields
                 map_from_struct = Map.put(map_from_struct, :vertex_type, struct_name)
-                {status, result} = mutate_map(conn, a_map)
-
-                list_mutate_string =
-                  if status == :ok do
-                    identifier = result["uids"]["identifier"]
-
-                    list_mutate_string <>
-                      " _:identifier" <>
-                      " \<" <>
-                      Atom.to_string(predicate_key) <>
-                      "\> " <> " \<" <> identifier <> "\>" <> " . \n"
-                  else
-                    list_mutate_string
-                  end
-
-                list_mutate_string
+                triple_list_item(list_mutate_string, predicate_key, mutate_map(conn, a_map))
 
               _ ->
-                #Logger.debug(fn -> "💡 2 object_value: #{inspect(object_value)}" end)
+                # Logger.debug(fn -> "💡 2 object_value: #{inspect(object_value)}" end)
                 list_mutate_string <> triple(predicate_key, each)
             end
 
@@ -261,7 +249,7 @@ defmodule ExdgraphGremlin.LowLevel do
     end
 
     mutate_string = Enum.reduce(a_map, mutate_string, lambda)
-    #Logger.debug(fn -> "💡 mutate_string: #{inspect(mutate_string)}" end)
+    # Logger.debug(fn -> "💡 mutate_string: #{inspect(mutate_string)}" end)
     {:ok, _} = ExDgraph.mutation(conn, mutate_string)
   end
 
@@ -292,6 +280,20 @@ defmodule ExdgraphGremlin.LowLevel do
 
     "    _:identifier" <>
       " \<" <> Atom.to_string(predicate_key) <> "\>" <> object_value <> " . \n"
+  end
+
+  defp triple_list_item(list_mutate_string, predicate_key, item_result) do
+    {status, result} = item_result
+
+    if status == :ok do
+      identifier = result["uids"]["identifier"]
+
+      list_mutate_string <>
+        " _:identifier" <>
+        " \<" <> Atom.to_string(predicate_key) <> "\> " <> " \<" <> identifier <> "\>" <> " . \n"
+    else
+      list_mutate_string
+    end
   end
 
   def check_schema(conn) do
