@@ -14,7 +14,10 @@ defmodule ExdgraphGremlin.GraphQL do
             query: String,
             query_root: nil,
             filter_root: nil,
-            body: nil
+            pagination_root: nil,
+            body: nil,
+            current_predicate: nil,
+            current_pagination: nil
 
   @doc """
   Creates a new graph
@@ -41,13 +44,39 @@ defmodule ExdgraphGremlin.GraphQL do
   def query_root(graph) do
     # :allofterms, {"name", "Star Wars"} func: allofterms(name, "Edwin"
     if graph.query_root != nil do
-      IO.inspect graph.query_root
-      "func: allofterms(#{elem(graph.query_root, 1)}, \"#{elem(graph.query_root, 2)}\")"
+      #IO.inspect graph.query_root
+     
+      Logger.debug fn -> "💡 graph.pagination_root: #{inspect graph.pagination_root}" end
+      IO.inspect graph.pagination_root
+      "func: allofterms(#{elem(graph.query_root, 1)}, \"#{elem(graph.query_root, 2)}\") #{graph.pagination_root}"
     else
       ""
     end
   end
 
+  @doc """
+  If current_predicate == nil, then the pagination is set to  the roo.
+   first: N , offset: N , after: UID
+  """
+  defp pagination(graph_in, pagination) do
+    case graph_in do
+      {:ok, graph} ->
+        if graph.current_predicate == nil do
+        pagination_root = ", #{elem(pagination, 0)} #{elem(pagination, 1)}"
+          {:ok, %GraphQL{graph | pagination_root: pagination_root}}
+        else
+          # predicate pagination
+          graph_in
+        end
+
+    {:error, error} ->
+      {:error, error}
+    end
+  end
+  
+  def first(graph_in, n) do
+    pagination(graph_in, {"first:", n})
+  end
 
   def filter_root(graph) do
     ""
@@ -87,9 +116,11 @@ defmodule ExdgraphGremlin.GraphQL do
             {:ok, res}
 
           {:error, error} ->
-              {:error, error}
+            Logger.error fn -> "💡 Error: #{inspect error}" end
+            {:error, error}
           end
       {:error, error} ->
+        Logger.error fn -> "💡 Error: #{inspect error}" end
         {:error, error}
     end
   end
